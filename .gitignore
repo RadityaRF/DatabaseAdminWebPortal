@@ -44,3 +44,6 @@ Thumbs.db
 # Node / Frontend (optional)
 # ======================
 node_modules/
+
+
+.env
