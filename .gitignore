@@ -1,0 +1,46 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.env.*
+
+# ======================
+# Flask
+# ======================
+instance/
+*.log
+
+# ======================
+# Migrations
+# ======================
+migrations/versions/__pycache__/
+
+# ======================
+# Docker
+# ======================
+*.tar
+docker-compose.override.yml
+
+# ======================
+# IDE / Editor
+# ======================
+.vscode/
+.idea/
+*.swp
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# Node / Frontend (optional)
+# ======================
+node_modules/

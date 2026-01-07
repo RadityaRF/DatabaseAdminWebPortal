@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}Hard Disk Cold Storage{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h5 class="mb-0">Hard Disk Cold Storage</h5>
+    <small class="text-muted">
+      Cold backup monitoring & historical tracking
+    </small>
+  </div>
+
+  <div class="d-flex gap-2">
+
+    {% if current_user.role in ["admin", "operator"] %}
+    <a href="{{ url_for('assets.hard_disk_upload') }}"
+       class="btn btn-sm btn-dark">
+      ⬆ Upload CSV
+    </a>
+    {% endif %}
+
+    <!-- EXPORT ALL DROPDOWN -->
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-dark dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown">
+        📤 Export All
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li>
+          <a class="dropdown-item"
+             href="{{ url_for('assets.export_hard_disk', fmt='csv') }}">
+            📄 CSV
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="{{ url_for('assets.export_hard_disk', fmt='xlsx') }}">
+            📊 Excel
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="{{ url_for('assets.export_hard_disk', fmt='pdf') }}">
+            🧾 PDF
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= FILTER ================= -->
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <input type="text"
+           name="q"
+           value="{{ keyword }}"
+           class="form-control form-control-sm"
+           placeholder="Search disk / serial / file">
+  </div>
+
+  <div class="col-md-3">
+    <input type="date"
+           name="start"
+           value="{{ start_date }}"
+           class="form-control form-control-sm">
+  </div>
+
+  <div class="col-md-3">
+    <input type="date"
+           name="end"
+           value="{{ end_date }}"
+           class="form-control form-control-sm">
+  </div>
+
+  <div class="col-md-2 d-grid">
+    <button class="btn btn-sm btn-dark">
+      🔍 Filter
+    </button>
+  </div>
+</form>
+
+<!-- ================= SUMMARY ================= -->
+<h6 class="mb-3 text-muted">Disk Summary</h6>
+
+<div class="row g-3 mb-4">
+  {% for s in summary %}
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+
+        <!-- CARD HEADER -->
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="card-title mb-1">{{ s.disk_name }}</h6>
+            <small class="text-muted">
+              Serial: {{ s.serial_number }}
+            </small>
+          </div>
+
+          <!-- EXPORT PER SERIAL -->
+          <div class="dropdown">
+            <button class="btn btn-sm btn-light dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown">
+              📤
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item"
+                   href="{{ url_for('assets.export_hard_disk', fmt='csv', serial=s.serial_number) }}">
+                  CSV
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="{{ url_for('assets.export_hard_disk', fmt='xlsx', serial=s.serial_number) }}">
+                  Excel
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="{{ url_for('assets.export_hard_disk', fmt='pdf', serial=s.serial_number) }}">
+                  PDF
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="my-2">
+
+        <div class="small">
+          <div>
+            Total Files:
+            <strong>{{ s.total_files }}</strong>
+          </div>
+          <div>
+            Total Size:
+            <strong>{{ "%.2f"|format(s.total_size_mb / 1024 / 1024) }} TB</strong>
+          </div>
+          <div class="mt-1">
+            Latest Backup:
+            <div class="fw-semibold">
+              {{ s.latest_backup }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ================= DETAIL TABLE ================= -->
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+
+    <table class="table table-sm table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Disk</th>
+          <th>Serial</th>
+          <th>File Name</th>
+          <th class="text-end">Size (GB)</th>
+          <th>Modified</th>
+          <th>Uploaded By</th>
+          <th>Uploaded At</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td class="fw-medium">{{ row.disk_name }}</td>
+          <td>{{ row.serial_number }}</td>
+          <td class="text-truncate" style="max-width: 260px;">
+            {{ row.file_name }}
+          </td>
+          <td class="text-end">
+            {{ "%.2f"|format(row.size_mb / 1024) }}
+          </td>
+          <td>
+            {{ row.modified.strftime("%Y-%m-%d %H:%M") }}
+          </td>
+          <td>
+            {{ row.uploaded_by }}
+          </td>
+          <td>
+            {{ row.uploaded_at.strftime("%Y-%m-%d %H:%M") }}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-4">
+            No data available
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<!-- ================= PAGINATION ================= -->
+<div class="d-flex justify-content-between align-items-center mt-3">
+
+  <small class="text-muted">
+    Page {{ pagination.page }} of {{ pagination.pages }}
+  </small>
+
+  <nav>
+    <ul class="pagination pagination-sm mb-0">
+
+      <!-- PREVIOUS -->
+      <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+        <a class="page-link"
+           href="{{ url_for('assets.hard_disk_list', page=pagination.prev_num) }}">
+          Previous
+        </a>
+      </li>
+
+      <!-- PAGE NUMBERS -->
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <li class="page-item {% if p == pagination.page %}active{% endif %}">
+            <a class="page-link"
+               href="{{ url_for('assets.hard_disk_list', page=p) }}">
+              {{ p }}
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">…</span>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      <!-- NEXT -->
+      <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+        <a class="page-link"
+           href="{{ url_for('assets.hard_disk_list', page=pagination.next_num) }}">
+          Next
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+</div>
+
+{% endblock %}

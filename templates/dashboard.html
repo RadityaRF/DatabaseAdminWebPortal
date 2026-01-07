@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | DBA Portal{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="row g-0 align-items-center">
+
+    <!-- Text -->
+    <div class="col-md-7 p-4">
+      <h3 class="fw-bold mb-2">
+        DBA Internal Portal
+      </h3>
+      <p class="text-muted mb-3">
+        Centralized platform for database asset management, operational support,
+        and internal DBA administration.
+      </p>
+
+      <ul class="small text-muted mb-0">
+        <li>Controlled access & role-based operations</li>
+        <li>Designed for production-grade environments</li>
+        <li>Audit-friendly & operationally focused</li>
+      </ul>
+    </div>
+
+    <!-- Image -->
+    <div class="col-md-5 text-center p-3 d-none d-md-block">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/6031/6031908.png"
+        alt="DBA Illustration"
+        class="img-fluid"
+        style="max-height: 180px; opacity: 0.9;"
+      >
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODULE CARDS ================= -->
+<div class="row g-4 mb-4">
+
+  <!-- Assets -->
+  <div class="col-md-6 col-lg-3">
+    <div class="card shadow-sm h-100 border-start border-4 border-primary">
+      <div class="card-body">
+        <h6 class="fw-bold mb-2">🗂 DBA Assets</h6>
+        <p class="small text-muted">
+          Inventory and capacity tracking for database infrastructure.
+        </p>
+        <ul class="small mb-0">
+          <li>
+            <a href="{{ url_for('assets.server_list') }}"
+                class="text-decoration-none text-reset">
+                Server production assets 
+            </a>
+        </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup -->
+  <div class="col-md-6 col-lg-3">
+    <div class="card shadow-sm h-100 border-start border-4 border-success">
+      <div class="card-body">
+        <h6 class="fw-bold mb-2">💾 Backup Inventory</h6>
+        <p class="small text-muted">
+          Visibility for backup artifacts and cold storage.
+        </p>
+        <ul class="small mb-0">
+            <li>
+                <a href="{{ url_for('assets.hard_disk_list') }}"
+                class="text-decoration-none text-reset">
+                Hard disk cold storage
+                </a>
+            </li>
+          <li>Backup reference</li>
+          <li>Retention overview</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitoring -->
+  <div class="col-md-6 col-lg-3">
+    <div class="card shadow-sm h-100 border-start border-4 border-warning">
+      <div class="card-body">
+        <h6 class="fw-bold mb-2">🖥 Monitoring</h6>
+        <p class="small text-muted">
+          Performance and health monitoring modules.
+        </p>
+        <ul class="small mb-0">
+          <li>Performance metrics</li>
+          <li>Replication / AG</li>
+          <li>Operational alerts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {% if current_user.is_admin() %}
+  <!-- Administration -->
+  <div class="col-md-6 col-lg-3">
+    <div class="card shadow-sm h-100 border-start border-4 border-danger">
+      <div class="card-body">
+        <h6 class="fw-bold mb-2">👤 Administration</h6>
+        <p class="small text-muted">
+          Security and access management.
+        </p>
+        <ul class="small mb-0">
+          <li>User management</li>
+          <li>Role-based access</li>
+          <li>Audit control</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ================= OPERATIONAL NOTE ================= -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body small text-muted">
+    <strong>Operational Note:</strong>
+    This system is intended for internal DBA usage only.
+    All activities are logged and subject to audit review.
+  </div>
+</div>
+
+{% endblock %}

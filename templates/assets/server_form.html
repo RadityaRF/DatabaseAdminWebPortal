@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}
+  {{ "Edit Server" if server else "Register Server" }}
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+<div class="mb-3">
+  <h5 class="mb-0">
+    {{ "Edit Production Server" if server else "Register Production Server" }}
+  </h5>
+  <small class="text-muted">
+    {{ "Update server information" if server else "Add new server into production assets" }}
+  </small>
+</div>
+
+<form method="post" class="card shadow-sm p-4 col-md-6">
+
+  <!-- HOSTNAME -->
+  <div class="mb-2">
+    <label class="form-label">Hostname</label>
+    <input name="hostname"
+           class="form-control"
+           value="{{ server.hostname if server else '' }}"
+           required>
+  </div>
+
+  <!-- IP ADDRESS -->
+  <div class="mb-2">
+    <label class="form-label">IP Address</label>
+    <input name="ip_address"
+           class="form-control"
+           value="{{ server.ip_address if server else '' }}"
+           required>
+  </div>
+
+  <!-- ENVIRONMENT -->
+  <div class="mb-2">
+    <label class="form-label">Environment</label>
+    <select name="environment" class="form-select">
+      <option value="Production"
+        {{ "selected" if server and server.environment == "Production" }}>
+        Production
+      </option>
+      <option value="Disaster Recovery"
+        {{ "selected" if server and server.environment == "Disaster Recovery" }}>
+        Disaster Recovery
+      </option>
+    </select>
+  </div>
+
+  <!-- SEGMENT -->
+  <div class="mb-2">
+    <label class="form-label">Segment</label>
+    <select name="segment" class="form-select">
+      {% for seg in [
+        "CORE System",
+        "BRINESIA System",
+        "BRINSAPP System",
+        "Database Administrator"
+      ] %}
+      <option
+        {{ "selected" if server and server.segment == seg }}>
+        {{ seg }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+    <!-- OS -->
+    <div class="mb-2">
+        <label class="form-label">OS</label>
+        <input name="os"
+            class="form-control"
+            value="{{ server.os if server else '' }}">
+    </div>
+
+    <!-- CPU -->
+    <div class="mb-2">
+        <label class="form-label">CPU</label>
+        <input type="number" name="cpu"
+                class="form-control"
+                value="{{ server.cpu if server else '' }}"
+                placeholder="e.g., 16"
+                min="0">
+        <small class="text-muted">Number of cores</small>
+    </div>
+
+    <!-- RAM -->
+    <div class="mb-2">
+        <label class="form-label">RAM (GB)</label>
+        <input type="number" name="ram"
+                class="form-control"
+                value="{{ server.ram if server else '' }}"
+                placeholder="e.g., 64"
+                min="0">
+    </div>
+
+    <!-- Total Storage -->
+    <div class="mb-2">
+        <label class="form-label">Total Storage (GB)</label>
+        <input type="number" name="storage"
+                class="form-control"
+                value="{{ server.storage if server else '' }}"
+                placeholder="e.g., 2048"
+                min="0">
+    </div>
+
+
+
+  <!-- OWNER -->
+  <div class="mb-3">
+    <label class="form-label">Owner</label>
+    <input name="owner"
+           class="form-control"
+           value="{{ server.owner if server else '' }}">
+  </div>
+
+  <!-- ================= BUTTON ROW ================= -->
+  <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+
+    <!-- LEFT: DELETE (EDIT ONLY, ADMIN / OPERATOR) -->
+    {% if server and current_user.role in ["admin", "operator"] %}
+    <button type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteModal">
+      🗑 Delete
+    </button>
+    {% else %}
+    <div></div>
+    {% endif %}
+
+    <!-- RIGHT: ACTION BUTTONS -->
+    <div class="d-flex gap-2">
+
+      <a href="{{ url_for('assets.server_list') }}"
+         class="btn btn-sm btn-outline-secondary">
+        Cancel
+      </a>
+
+      <button type="submit"
+              class="btn btn-sm btn-dark"
+              onclick="this.disabled=true;this.innerText='Saving…';this.form.submit();">
+        {{ "Save Changes" if server else "Save" }}
+      </button>
+
+    </div>
+  </div>
+
+</form>
+
+<!-- ================= DELETE CONFIRMATION MODAL ================= -->
+{% if server %}
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h6 class="modal-title text-danger">
+          Confirm Delete
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="mb-1">
+          Are you sure you want to delete this server?
+        </p>
+        <strong>{{ server.hostname }}</strong>
+        <div class="text-muted small mt-1">
+          This action cannot be undone.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-bs-dismiss="modal">
+          Cancel
+        </button>
+
+        <form method="post"
+              action="{{ url_for('assets.server_delete', id=server.id) }}">
+          <button class="btn btn-sm btn-danger">
+            Delete
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

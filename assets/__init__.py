@@ -1,0 +1,10 @@
+from flask import Blueprint
+
+assets_bp = Blueprint(
+    "assets",
+    __name__,
+    template_folder="../templates/assets",
+    url_prefix="/assets"
+)
+
+from . import routes

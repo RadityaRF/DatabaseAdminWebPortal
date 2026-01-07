@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h4>{{ "Create User" if mode == "create" else "Edit User" }}</h4>
+
+<form method="POST" class="w-50">
+  <input class="form-control mb-2"
+         name="full_name"
+         placeholder="Full Name"
+         value="{{ user.full_name if user else '' }}">
+
+  {% if mode == "create" %}
+  <input class="form-control mb-2"
+         name="username"
+         placeholder="Username" required>
+  {% endif %}
+
+  <input class="form-control mb-2"
+         type="password"
+         name="password"
+         placeholder="Password {% if mode=='edit' %}(leave blank){% endif %}">
+
+  <select class="form-control mb-2" name="role">
+    <option value="viewer" {% if user and user.role=='viewer' %}selected{% endif %}>Viewer</option>
+    <option value="operator" {% if user and user.role=='operator' %}selected{% endif %}>Operator</option>
+    <option value="admin" {% if user and user.role=='admin' %}selected{% endif %}>Admin</option>
+  </select>
+
+  <button class="btn btn-success">Save</button>
+  <a href="{{ url_for('auth.users') }}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}

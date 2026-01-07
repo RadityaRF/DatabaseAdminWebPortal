@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Login</h4>
+<form method="POST" class="w-25">
+  <input name="username" class="form-control mb-2" placeholder="Username" required>
+  <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
+  <button class="btn btn-primary">Login</button>
+</form>
+{% endblock %}

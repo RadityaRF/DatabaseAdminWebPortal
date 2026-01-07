@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Upload Hard Disk CSV{% endblock %}
+
+{% block content %}
+
+<h5 class="mb-3">Upload Hard Disk Cold Storage CSV</h5>
+
+<form method="POST"
+      enctype="multipart/form-data"
+      class="card p-4 shadow-sm"
+      style="max-width: 500px;">
+
+  <div class="mb-3">
+    <label class="form-label">CSV File</label>
+    <input type="file"
+           name="file"
+           accept=".csv"
+           class="form-control"
+           required>
+  </div>
+
+  <button class="btn btn-dark">
+    Upload
+  </button>
+
+  <a href="{{ url_for('assets.hard_disk_list') }}"
+     class="btn btn-link ms-2">
+    Cancel
+  </a>
+</form>
+
+{% endblock %}
