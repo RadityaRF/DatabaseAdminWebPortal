@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   web:
+    image: dba_portal_web
     build: .
     container_name: flask_app
     env_file:

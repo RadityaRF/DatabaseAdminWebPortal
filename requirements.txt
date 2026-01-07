@@ -5,3 +5,8 @@ python-dotenv
 pyodbc
 reportlab
 SQLAlchemy
+Flask-Migrate
+flask-migrate
+pandas
+numpy
+
